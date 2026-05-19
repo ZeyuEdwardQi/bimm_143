@@ -1,0 +1,179 @@
+---
+title: "Class 08: Breast Cancer Mini Project"
+author: "Zeyu Qi (A17342618)"
+format: pdf
+toc: true
+---
+
+
+## Background
+
+The goal of this mini-project is for you to explore a complete analysis using the unsupervised learning techniques covered in class.
+
+Today we will analyze a data-set from a fine needle aspiration (FNA) of a breast mass.
+
+## Data Import
+
+The data is made available as a CSV file for download. We can read this in using `read.csv()`.
+
+```{r}
+# Save your input data file into your Project directory
+fna.data <- "WisconsinCancer.csv"
+
+# Complete the following code to input the data and store as wisc.df
+wisc.df <- read.csv(fna.data, row.names=1)
+
+head(wisc.df)
+```
+
+
+Make sure we remove or exclude `diagnosis` column from the data-set that we use for further analysis - this is the expert diagnosis as either M or B:
+
+```{r}
+# We can use -1 here to remove the first column
+wisc.data <- wisc.df[,-1]
+diagnosis <- as.factor(wisc.df$diagnosis)
+```
+
+## Exploratory Data Analysis
+
+> Q1. How many observations are in this dataset?
+
+```{r}
+nrow(wisc.data)
+```
+> Q2. How many of the observations have a malignant diagnosis?
+
+```{r}
+table(wisc.df$diagnosis)
+```
+ 
+ > Q3. How many variables/features in the data are suffixed with _mean?
+ 
+We can use `grep()` function to help us here:
+```{r}
+length(grep("_mean", colnames(wisc.data)))
+```
+ 
+ ## Principal Component Analysis (PCA)
+ 
+ We need to scale our data before PCA with the `scale=TRUE` argument to `prcomp()`
+ 
+```{r}
+wisc.pr <- prcomp(wisc.data, scale=TRUE)
+summary(wisc.pr)
+```
+ 
+ > Q4. From your results, what proportion of the original variance is captured by the first principal component (PC1)?
+ 
+```{r}
+summary(wisc.pr)$importance[2, 1]
+```
+
+ 
+ > Q5. How many principal components (PCs) are required to describe at least 70% of the original variance in the data?
+ 
+```{r}
+which(summary(wisc.pr)$importance[3, ] >= 0.70)[1]
+```
+ 
+> Q6. How many principal components (PCs) are required to describe at least 90% of the original variance in the data?
+
+```{r}
+which(summary(wisc.pr)$importance[3, ] >= 0.90)[1]
+```
+
+> Q7. What stands out to you about this plot? Is it easy or difficult to understand? Why?
+
+```{r}
+biplot(wisc.pr)
+```
+
+It is difficult to understand because all points are plotted together with different categorical names labeled. 
+ 
+ 
+> Q8. Generate a similar plot for principal components 1 and 3. What do you notice about these plots?
+
+B and M seems to be seperated. 
+
+Let's see the "PC score plot"
+```{r}
+library(ggplot2)
+
+ggplot(wisc.pr$x) +
+  aes(PC1, PC3, col=diagnosis) +
+  geom_point()
+```
+ 
+ > Q9. For the first principal component, what is the component of the loading vector (i.e. wisc.pr$rotation[,1]) for the feature concave.points_mean? This tells us how much this original feature contributes to the first PC. Are there any features with larger contributions than this one?
+ 
+For the first principal component (PC1) in the Wisconsin breast cancer dataset, the loading for concave.points_mean is large and positive.This means it is one of the strongest contributors to PC1. There may be a few features with similar or slightly larger loadings but overall concave.points_mean is among the top contributors to the first principal component.
+ 
+ 
+ 
+## Hierarchical clustering
+
+```{r}
+# Scale the wisc.data data using the "scale()" function
+data.scaled <- scale(wisc.data)
+data.dist <- dist(data.scaled)
+wisc.hclust <- hclust(data.dist, method="complete")
+```
+ 
+ 
+```{r}
+plot(wisc.hclust)
+abline(h=19, col="red", lty=2)
+```
+> Q10. Using the plot() and abline() functions, what is the height at which the clustering model has 4 clusters?
+
+h=20
+ 
+## Combining methods
+
+> Q12. Which method gives your favorite results for the same data.dist dataset? Explain your reasoning.
+
+Ward.D2 gives the best results.
+
+It tends to produce compact, well-separated clusters because it minimizes within-cluster variance at each step. In contrast, single linkage often creates “chaining” effects, and complete/average linkage can be less balanced. Overall, Ward.D2 usually yields the most interpretable and meaningful clustering structure for this dataset.
+
+```{r}
+d <- dist(wisc.pr$x[,1:4])
+wisc.pr.hclust <- hclust(d, method="ward.D2")
+plot(wisc.pr.hclust)
+abline(h=20, col="red")
+```
+
+```{r}
+grps <- cutree(wisc.pr.hclust, h=70)
+table(grps)
+```
+
+> Q13. How well does the newly created hclust model with two clusters separate out the two “M” and “B” diagnoses?
+
+How does this clustering `grps` correspond to the expert `diagnosis`? 
+
+```{r}
+table(diagnosis, grps)
+```
+
+The clustering corresponds fairly well to the expert diagnosis. Group 1 is mostly malignant: 165 M and only 6 B. Group 2 is mostly benign: 351 B and 47 M. So the clusters separate benign and malignant cases pretty well, though not perfectly because 53 total cases are placed in the opposite-majority cluster.
+
+> Q14. How well do the hierarchical clustering models you created in the previous sections (i.e. without first doing PCA) do in terms of separating the diagnoses? Again, use the table() function to compare the output of each model (wisc.hclust.clusters and wisc.pr.hclust.clusters) with the vector containing the actual diagnoses.
+
+
+```{r}
+wisc.hclust.clusters <- cutree(wisc.hclust, k = 4)
+table(wisc.hclust.clusters, diagnosis)
+```
+
+The hierarchical clustering without PCA does a poorer job separating the diagnoses. The clusters contain a more mixed combination of benign and malignant cases, indicating less clear structure in the data. Overall, compared to the PCA-based clustering, it is less effective at distinguishing between the two groups.
+
+> Q16. Which of these new patients should we prioritize for follow up based on your results?
+
+We should prioritize patient 2 for follow-up.
+
+From the PCA plot, patient 2 lies closer to the cluster associated with malignant (M) cases, while patient 1 is closer to the benign cluster. This suggests patient 2 is at higher risk and should be examined more urgently.
+
+
+
