@@ -1,2 +1,2 @@
 # bimm_143
-Class work for BIMM143 at UCSD
+Class work for BIMM143 at UCSD San Diego
