@@ -74,8 +74,8 @@ km$size
 km$cluster
 ```
 
-     [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2
-    [39] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+     [1] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1
+    [39] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 
 > Q. What component of your result object details cluster center?
 
@@ -84,8 +84,8 @@ km$centers
 ```
 
               x         y
-    1 -2.934045  3.008946
-    2  3.008946 -2.934045
+    1  3.099454 -3.517008
+    2 -3.517008  3.099454
 
 > Q. Plot `z` colored by the kmeans cluster assignment and add cluster
 > centers as blue points.
@@ -165,8 +165,8 @@ Once we have our `hclust` object (tree of cluster dendrogram), we can
 cutree(hc, h=4)
 ```
 
-     [1] 1 2 1 2 2 1 2 2 1 1 2 1 2 2 2 1 1 2 2 2 2 2 2 2 2 1 2 1 1 1 3 3 3 4 3 4 4 4
-    [39] 4 4 4 4 4 3 3 4 4 4 3 4 3 3 4 4 3 4 4 3 4 3
+     [1] 1 2 1 3 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 3 1 1 2 1 1 2 1 1 2 3 4 5 6 6 5 6 6 5
+    [39] 6 6 4 6 6 6 6 6 6 6 6 6 6 6 6 5 6 6 4 6 5 6
 
 > Q. Make a plot of `z` with your hclust results (i.e. colored by
 > cluster membership).
