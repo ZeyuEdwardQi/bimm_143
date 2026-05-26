@@ -14,14 +14,14 @@ Class 7: [Introduction to machine learning](class07/class07.md)
 
 Class 8: [Unsupervised learning mini-project](class08/class08.md)
 
-Class 9: [Candy mini-project](class09/class09.md)
+Class 9: [Candy mini-project](class09/lab09.md)
 
-Class 10: [Structural Bioinformatics (pt1)](class10/class10.md)
+Class 10: [Structural Bioinformatics (pt1)](class10/lab10.md)
 
-Class 11: [Structural Bioinformatics (pt2 AlphaFold)](class11/class11.md)
+Class 11: [Structural Bioinformatics (pt2 AlphaFold)](class11/clab11.md)
 
-Class 12: [Genome informatics and high throughput sequencing](class12/class12.md)
+Class 12: [Genome informatics and high throughput sequencing](class12/lab12.md)
 
-Class 13: [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](class13/class13.md)
+Class 13: [Transcriptomics, RNA-Seq analysis, and the interpretation of gene lists](class13/lab13.md)
 
-Class 14: [RNA-Seq mini project](class14/class14.md)
+Class 14: [RNA-Seq mini project](class14/lab14.md)
